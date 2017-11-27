@@ -1,0 +1,16 @@
+.DS_Store
+.idea/
+coverage/
+dist/
+public/
+node_modules/
+tests_output/
+tests/regression/screenshots/new/
+tests/regression/screenshots/errors/
+packages/*/package-lock.json
+tests_screenshots/
+webpack-stats.html
+*.regression/
+browserstack.err
+*.log
+package.json.lerna_backup

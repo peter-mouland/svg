@@ -1,0 +1,28 @@
+{
+  "sourceMaps": true,
+  "presets": ["react", ["env", {
+    "targets": {
+      "browsers": [
+        "Safari >= 8",
+        "ie >= 10",
+        "last 2 Chrome versions",
+        "last 2 Firefox versions",
+        "Edge >= 13",
+        "ios_saf >= 8",
+        "ie_mob >= 11",
+        "Android >= 4"
+      ],
+      "debug": false,
+      "loose": false,
+      "modules": false,
+      "useBuiltIns": true
+    }
+  }]],
+  "plugins": [
+    "add-module-exports",
+    "transform-react-remove-prop-types",
+    "transform-class-properties",
+    "transform-object-rest-spread",
+    "transform-object-assign"
+  ]
+}

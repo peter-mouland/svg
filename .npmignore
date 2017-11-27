@@ -1,0 +1,10 @@
+.*
+coverage/
+public/
+node_modules/
+tests/
+*.log
+package-lock.json
+*.spec.js
+*.regression.js
+*.story.jsx

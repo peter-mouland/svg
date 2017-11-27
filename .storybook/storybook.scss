@@ -1,0 +1,133 @@
+@import 'src/markdownstyle.scss';
+
+code {
+  font-family: monospace;
+  letter-spacing: -1px;
+}
+
+.disable-animations,
+.disable-animations * {
+  animation: none!important;
+  transition: none!important;
+}
+
+/* stylelint-disable */
+.storybook-nav {
+  border-bottom: 1px solid #cccccc;
+  align-items: center;
+  height: 51px;
+  display: flex;
+  background-color: #f0f0f0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  box-shadow: 0 2px 1px #f0f0f0;
+  overflow: hidden;
+}
+
+.storybook-nav__logo {
+  width: 60px;
+  border-radius: 100%;
+  border: 1px solid #ccc;
+  &:hover {
+    -webkit-animation-name: spinnerRotate;
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+  }
+}
+.storybook-nav .xs-10 {
+  display: flex;
+  align-items: center;
+}
+.storybook-nav .xs-2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.storybook-nav__project-text {
+  font-size: 32px;
+  line-height: 60px;
+  padding-left: 10px;
+}
+
+.storybook-nav__kind-text {
+  padding-left: 20px;
+  margin-left: 20px;
+  border-left: 1px solid #cccccc;
+}
+
+.storybook-nav__link {
+  color: #3777b0;
+  text-align: right;
+  font-size: 12px;
+}
+
+.storybook-nav + .story {
+  padding: 50px 0 0;
+}
+
+.storybook-app.container {
+  max-width: 825px;
+  margin: 30px auto 0;
+  padding: 0;
+}
+
+.storybook-app {
+  padding-top: 5px;
+}
+
+.storybook-app__desc {
+  margin-top: 25px;
+  .h2 {
+    margin-top: 0;
+  }
+  .font-standard {
+    font-size: 13px;
+    line-height: 15px;
+  }
+}
+
+.storybook-app__demo {
+  margin-top: 25px;
+}
+
+.storybook-hr {
+  margin: 20px 0 0;
+  padding: 20px 0 0;
+  border: 1px dashed #ccc;
+  border-width: 0 0 1px;
+}
+.storybook-hr--title {
+  margin: 0 0 20px;
+  padding: 0 0 20px;
+  border: 1px solid #ccc;
+  border-width: 0 0 1px;
+}
+
+.storybook-app.container {
+  max-width: 825px;
+  margin: 30px auto 0;
+  padding: 0;
+}
+
+.storybook-app.storybook-app--container-full {
+  margin: 30px 0;
+  padding: 0 30px;
+}
+
+.storybook-app--back-to-top {
+  height: 10000px;
+}
+
+.storybook-app--loading-wheel {
+  width: 350px;
+  height: 100px;
+  margin: 50px auto;
+  position: relative;
+}
+
+
+/* stylelint-enable */
