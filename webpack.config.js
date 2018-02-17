@@ -1,19 +1,16 @@
 const webpack = require('webpack')
-const path = require('path')
-const ROOT = path.join(process.cwd())
-const PACKAGE = path.join(ROOT, 'esnext')
 
 module.exports = {
-  context: ROOT,
-  externals: { react: true },
-  entry: { 'dist/Svg': `${PACKAGE}/Svg.jsx` },
+  context: __dirname,
+  entry: {
+    'dist/Svg': './esnext/Svg.jsx'
+  },
   output: {
-    path: ROOT,
+    path: __dirname,
     filename: '[name].js',
     libraryTarget: 'commonjs2'
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     })
@@ -33,10 +30,6 @@ module.exports = {
           removeSVGTagAttrs: false
         }
       },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader?name=../../fonts/[name].[ext]'
-      }
     ]
   },
   resolve: {

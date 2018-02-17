@@ -1,52 +1,58 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SvgProvider from './Provider';
 
-const createSymbol = (svgContents, { className = '', cacheId, id } = {}) => {
+const createSymbol = (svg) => {
   // defs need to be moved outside the symbol for firefox
-  const matchDefs = svgContents.match(/<defs>(.*?)<\/defs>/i) || [];
-  const defs = matchDefs[0] || '';
-  const svgWithoutDefs = svgContents.replace(/<defs>(.*?)<\/defs>/ig, () => '');
-  const symbolClass = className ? `class="${className}"` : '';
-  return `${defs}<symbol id="${cacheId || id}" ${symbolClass}>${svgWithoutDefs}</symbol>`;
+  const matches = svg.match(/<defs>(.*?)<\/defs>/ig) || [];
+  const defs = (matches.length > 0) ? matches[0] : '';
+  return svg
+    .replace(/<defs>(.*?)<\/defs>/ig, () => '')
+    .replace('<svg', `<svg style="display:none" >${defs}<symbol`)
+    .replace('</svg>', '</symbol></svg>');
 };
 
-const createUse = (svg, cacheId, { viewBox = '' }) => {
-  const useVB = viewBox ? ` viewBox="${viewBox}"` : '';
-  return `<use${useVB} xlink:href='#${cacheId}' />`; // use needs xlink for safari
+const createUse = (svg, use) => {
+  // svg needs viewBox for firefox
+  const matches = svg.match(/viewBox="(.*?)"/ig) || [];
+  const viewBox = (matches.length > 0) ? ` ${matches[0]}` : '';
+  return `<svg${viewBox}><use xlink:href='#${use}' /></svg>`; // use needs xlink for safari
 };
 
-const getSvgTag = (svg = '') => (svg.match(/(<svg[^>]*)>/) || [])[0];
-const svgAttrs = (svgTag = '', attrs) =>
-  (svgTag.match(/(\S+)\s*=\s*["']?((?:.(?!["']?\s+(?:\S+)=|[>"']))?[^"']*)["']?/ig) || [])
-    .reduce((prev, curr) => {
-      const keyValuePair = curr.split('=');
-      const svgKey = keyValuePair[0];
-      const svgValue = keyValuePair[1].replace(/(^['"])|(['"]$)/g, '');
-      const key = svgKey === 'class' ? 'className' : keyValuePair[0];
-      const value = svgKey === 'class' ? `${attrs[key] || ''} ${svgValue}`.trim() : svgValue;
-      prev[key] = attrs[key] ? attrs[key] : value; // eslint-disable-line no-param-reassign
-      return prev;
-    }, attrs);
+const setId = (svg, id) => svg.replace(/(<svg[^>]*) id=".*?"/ig, '$1').replace('<svg', `<svg id="${id}"`);
+const createSymbolWithId = (svg, id) => createSymbol(setId(svg, id));
+const setWidth = (svg, width) => svg.replace(/(<svg[^>]*) width=".*?"/ig, '$1').replace(/<svg/g, `<svg width="${width}"`);
+const setHeight = (svg, height) => svg.replace(/(<svg[^>]*) height=".*?"/ig, '$1').replace(/<svg/g, `<svg height="${height}"`);
 
 const SVG = ({
-  children, id, cacheId, ...props
-}, { svgCache = {} } = {}) => {
+  height, width, children, className, symbol = false, id, use, cacheId, ...props
+}, { svgCache }) => {
+  let svg = '';
   const isBase64 = typeof children === 'string' && children.indexOf('data') === 0;
-  const svg = children || '';
-  const svgTag = getSvgTag(svg);
-  const attrs = svgAttrs(svgTag, { id, ...props });
-  let svgContents = svg.replace(/(<svg[^>]*)>/, '').replace('</svg>', '');
+  const hasProvider = !!svgCache;
 
-  if (svgCache[cacheId]) {
-    svgContents = svgCache[cacheId];
-  } else if (cacheId) {
-    const cache = createUse(svgContents, cacheId, attrs);
-    svgContents = `${createSymbol(svgContents, { cacheId, ...attrs })}${cache}`;
-    delete attrs.className;
-    svgCache[cacheId] = cache; // eslint-disable-line no-param-reassign
+  if (svgCache && svgCache.use({ cacheId })) {
+    svg = svgCache.use({ cacheId });
+  } else if (cacheId && hasProvider) {
+    const Use = createUse(children, cacheId);
+    const Symbol = createSymbolWithId(children, cacheId);
+    svg = Use;
+    svgCache.add({ cacheId, Use, Symbol });
+  } else if (symbol) {
+    svg = createSymbolWithId(children, id);
+  } else if (use) {
+    svg = createUse(svg, use);
+  } else {
+    svg = children;
   }
 
-  return React.createElement(isBase64 ? 'img' : 'svg', { ...attrs, dangerouslySetInnerHTML: { __html: svgContents } });
+  svg = id && !symbol ? setId(svg, id) : svg;
+  svg = height ? setHeight(svg, height) : svg;
+  svg = width ? setWidth(svg, width) : svg;
+
+  return isBase64
+    ? <img src={svg} className={className} {...props} />
+    : <span dangerouslySetInnerHTML={{ __html: svg }} className={className} {...props} />;
 };
 
 SVG.contextTypes = {
@@ -54,3 +60,4 @@ SVG.contextTypes = {
 };
 
 export default SVG;
+export { SvgProvider };
